@@ -1,0 +1,4 @@
+2025-03-20 15:35:58.240618+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT * FROM PERSONS PERSONS [*]ENTRIES"
+Syntax error in SQL statement "SELECT * FROM PERSONS PERSONS [*]ENTRIES"; SQL statement:
+SELECT * FROM PERSONS PERSONS ENTRIES [42000-232]

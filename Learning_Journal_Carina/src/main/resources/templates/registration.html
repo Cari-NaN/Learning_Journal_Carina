@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset = "UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Learning Journal</title>
+    <link rel = "stylesheet" href = "/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <div class="logo">Learning Journal</div>
+            <nav>
+                <ul>
+                    <li><a th:href="@{/entries}">Learning Journal</a></li>
+                    <li><a href="#">Lightning Topics</a></li>
+                    <li><a href="#">Profil</a></li>
+                    <li><a href="#" class="active">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title">Registrierung</h1>
+        <section class="entry-form">
+        <form method="post" action="/">
+            <h2 class="form-title">Neuen Benutzer registrieren:</h2>
+            <p>Vorname: <input type="text" name="vorname" class="form-control"></p>
+            <p>Nachname: <input type="text" name="nachname" id="nachname" class="form-control"></p>
+            <p>E-Mail: <input type="text" name="email" id="email" class="form-control"></p>
+            <p>Benutzername: <input type="text" name="username" id="username" class="form-control"></p>
+            <p>Passwort: <input type="password" name="password" id="password" class="form-control"></p>
+            <button type="submit" class="btn">💾</button>
+        </form>
+        </section>
+    </main>
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2025 Learning Journal</p>
+            <p>Mischok Academy</p>
+        </div>
+    </footer>
+</body>
+</html>
