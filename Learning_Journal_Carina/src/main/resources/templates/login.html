@@ -12,31 +12,35 @@
         <div class="logo">Learning Journal</div>
         <nav>
             <ul>
-                <li><a href="#" class="active">Learning Journal</a></li>
+                <li><a href="#">Learning Journal</a></li>
                 <li><a href="#">Lightning Topics</a></li>
-                <li><a href="#">Profil</a></li>
-                <li><a href="#">Login</a></li>
+                <li><a th:href="@{/profile}">Profil</a></li>
+                <li><a href="#" class="active">Login</a></li>
             </ul>
         </nav>
     </div>
 </header>
 <main class="container">
     <h1 class="page-title">Login</h1>
-
-    <section class="entry-form">
-        <h2 class="form-title">Bitte loggen Sie sich ein.</h2>
+    <div class = "login-container">
+    <section class="login-form">
+        <h2 class="form-title">Bitte loggen Sie sich ein:</h2>
         <form method="post" action="/login">
-            <div class="form-group">
+            <div class="login-group">
                 <label for="username">Benutzername:</label>
-                <input type="text" id="username" name="username" class="form-control">
+                <input type="text" id="username" name="username" class="login-control">
             </div>
-            <div class="form-group">
+            <div class="login-group">
                 <label for="password">Passwort:</label>
-                <textarea type="password" name="password" id="password" class="form-control"></textarea>
+                <input type="password" name="password" id="password" class="login-control"></input>
             </div>
-            <button type="submit" class="btn">Erstellen</button>
+            <button type="submit" class="btn">Login</button>
         </form>
+        <p class="register-link">
+            Noch keinen Account? <a href="/addPerson">Jetzt registrieren</a>
+        </p>
     </section>
+    </div>
 </main>
 </body>
 </html>

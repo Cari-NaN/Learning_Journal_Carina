@@ -1,14 +1,17 @@
 package com.academy.Learning_Journal;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Controller
@@ -19,6 +22,9 @@ public class EntryController {
     @Autowired
     private EntryRepository entryRepository;
 
+    @Autowired
+    private SessionRepository sessionRepository;
+
     @GetMapping("/entries")
     public String showEntryForm(Model model) {
         model.addAttribute("entries", entryRepository.findAll());
@@ -28,9 +34,11 @@ public class EntryController {
     @PostMapping("/saveEntry")
     public String saveEntry(
             @RequestParam(name = "title", required = true)      String formTitle,
-            @RequestParam(name = "content", required = true)    String formContent
+            @RequestParam(name = "content", required = true)    String formContent,
+            @CookieValue(value = "session_id")                  String cookieSessionId
     ) {
-        Entry e = Entry.builder().title(formTitle).content(formContent).creationTime(Instant.now()).build();
+        Session s = sessionRepository.findById(UUID.fromString(cookieSessionId)).get();
+        Entry e = Entry.builder().title(formTitle).content(formContent).creationTime(Instant.now()).author(s.getPerson()).build();
         entryRepository.save(e);
         return "redirect:/entries";
     }
@@ -45,18 +53,6 @@ public class EntryController {
         return "redirect:/entries";
     }
 
-    @PostMapping("/updateEntry")
-    public String updateEntry(
-            @RequestParam(name = "id", required = true)         Long entryId,
-            @RequestParam(name = "title", required = true)      String entryTitle,
-            @RequestParam(name = "content", required = true)    String entryContent
-    ) {
-        Entry entry = entryRepository.getById(entryId);
-        entry.setTitle(entryTitle);
-        entry.setContent(entryContent);
-
-        return "redirect:/entries";
-    }
 
 
 

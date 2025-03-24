@@ -28,6 +28,9 @@ public class Person {
 
     private String  password;
 
-//    @OneToMany(mappedBy = "author")
-//    private Set<Entry> entries;
+    @OneToMany(mappedBy = "author")
+    private Set<Entry> entries;
+
+    @OneToMany(mappedBy = "person")
+    private Set<Session> sessions;
 }
