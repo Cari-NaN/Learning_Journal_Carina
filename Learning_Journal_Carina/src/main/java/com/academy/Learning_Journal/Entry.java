@@ -25,8 +25,8 @@ public class Entry {
 
     private Instant creationTime;
 
-//    @ManyToOne
-//    @JoinColumn(name="person_id", nullable = true)
-//    private Person author;
+    @ManyToOne
+    @JoinColumn(name="person_id", nullable = false)
+    private Person author;
 
 }

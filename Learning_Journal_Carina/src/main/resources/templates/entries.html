@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Journal</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>My Learning Journal</title>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-<header>
+<header class="navbar">
     <div class="container nav-container">
         <div class="logo">Learning Journal</div>
         <nav>
             <ul>
-                <li><a href="#" class="active">Learning Journal</a></li>
+                <li><a th:href="@{/entries}" class="active">Learning Journal</a></li>
                 <li><a href="#">Lightning Topics</a></li>
-                <li><a href="#">Profil</a></li>
-                <li><a href="#">Login</a></li>
+                <li><a th:href="@{/profile}">Profil</a></li>
+                <form method="post" action="/logout">
+                <li><button class = "logout-btn" onclick="window.location.href='/logout'">Logout</button></li>
+                </form>
             </ul>
         </nav>
     </div>
@@ -25,7 +27,7 @@
 
     <section class="entry-form">
         <h2 class="form-title">Neuen Eintrag erstellen</h2>
-        <form method="post" action="/saveEntry">
+        <form method="post" action="/entries/save">
             <div class="form-group">
                 <label for="title">Überschrift</label>
                 <input type="text" id="title" name="title" class="form-control"
@@ -40,59 +42,45 @@
         </form>
     </section>
 
-    <section class="journal-entries">
-
-        <article class="journal-entry" th:each="e : ${entries}">
-            <div th:unless="${entry != null and entry.id == e.id}">
-                <header class="entry-header">
-                    <h2 class="entry-title" th:text="${e.title}">Journal Eintrag</h2>
-                    <div class="entry-timestamp" th:text="${#temporals.format(e.creationTime, 'dd.MM.yyyy HH:mm')}">
-                        14. März 2025, 09:30 Uhr
-                    </div>
-                </header>
-                <div class="entry-content">
-                    <p th:text="${e.content}">Hier der Eintrag.</p>
-
-                </div>
-                <div class="entry-form-btns">
-                    <input type="hidden" name="id" th:value="${e.id}">
-                    <button class="btn edit-btn" th:attr = "data-id=${e.id}" onclick = "editEntry(this)">Bearbeiten</button>
-                    <form method="post" action="/deleteEntry"
-                          onsubmit="return confirm('Willst du den Eintrag wirklich löschen?');">
-                        <input type="hidden" name="id" th:value="${e.id}">
-                        <button class="btn">Löschen</button>
-                    </form>
-                </div>
+    <section>
+        <div class="journal-entries" th:if="${editMode == null}">
+        <article class="journal-entry" th:each="entry : ${entries}">
+            <header class="entry-header">
+                <h2 class="entry-title" th:text="${entry.title}">Journal Eintrag</h2>
+                <div class="entry-timestamp" th:text="${#temporals.format(entry.creationTime, 'dd.MM.yyyy HH:mm')}">14. März 2025, 09:30 Uhr</div>
+            </header>
+            <div class="entry-content">
+                <p th:text="${entry.content}">Hier der Eintrag.</p>
             </div>
-
-            <form method="post" action="/updateEntry" class="entry-edit hidden" th:id="'edit-form-' + ${e.id}">
-                <input type="hidden" name="id" th:value="${e.id}">
-
-                <label>Titel</label>
-                <input type="text" name="title" th:value="${e.title}">
-
-                <label>Inhalt</label>
-                <textarea name="content" th:text="${e.content}"></textarea>
-
-                <button type="submit">Speichern</button>
-                <button type="button" class="cancel-btn" onclick="cancelEdit(this)">Abbrechen</button>
+            <div class="entry-form-btns">
+            <form method="get" action="/entries/edit">
+                <input type="hidden" name="id" th:value="${entry.id}">
+                <button class = "btn">Bearbeiten</button>
             </form>
-
+            <form method="post" action="/entries/delete" onsubmit="return confirm('Willst du den Eintrag wirklich löschen?');">
+                <input type="hidden" name="id" th:value="${entry.id}">
+                <button class = "btn">Löschen</button>
+            </form>
+            </div>
         </article>
+        </div>
+        <form class="journal-entries" method="post" action="/entries/update" th:if="${editMode}">
+            <h2 class="form-title">Bitte bearbeite hier deinen Eintrag:</h2>
+            <div class="login-group">
+                <label for="editTitle">Überschrift:</label>
+                <input class="form-control" type="text" id="editTitle" name="title" th:value="${entry.title}"></input>
+            </div>
+            <div class="login-group">
+                <label for="entryContent">Eintrag:</label>
+                <input class="form-control" type="text" id="entryContent" name="content" th:value="${entry.content}">
+            </div>
+            <input type="hidden" name="id" th:value="${entry.id}">
+            <button type="submit" class="btn">Speichern</button>
+            <a href="/entries" class="btn">Abbrechen</a>
+        </form>
 
     </section>
 </main>
-<script>
-    function editEntry(button) {
-        var entryId = button.getAttribute("data-id");
-        document.getElementById("edit-form-" + entryId).classList.remove("hidden");
-    }
-
-    function cancelEdit(button) {
-        var form = button.closest(".entry-edit");
-        form.classList.add("hidden");
-    }
-</script>
 <footer>
     <div class="container footer-content">
         <p>&copy; 2025 Learning Journal</p>

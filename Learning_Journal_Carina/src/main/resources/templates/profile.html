@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Profil</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<header>
+    <div class="container nav-container">
+        <div class="logo">Learning Journal</div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/entries}">Learning Journal</a></li>
+                <li><a href="#">Lightning Topics</a></li>
+                <li><a th:href="@{/profile}" class="active">Profil</a></li>
+                <form method="post" action="/logout">
+                    <li><button class = "logout-btn" onclick="window.location.href='/logout'">Logout</button></li>
+                </form>
+            </ul>
+        </nav>
+    </div>
+</header>
+<main class="profile-container">
+    <div class="profile-form">
+        <h1 class="page-title">Mein Profil</h1>
+
+        <!-- Anzeigeformular -->
+        <div th:if="${editMode == null}">
+            <div class="info-group">
+                <label>Vorname:</label>
+                <p class="entry-content" th:text="${person.vorname}"></p>
+            </div>
+            <div class="info-group">
+                <label>Nachname:</label>
+                <p class="entry-content" th:text="${person.nachname}"></p>
+            </div>
+            <div class="info-group">
+                <label>E-Mail:</label>
+                <p class="entry-content" th:text="${person.email}"></p>
+            </div>
+            <div class="info-group">
+                <label>Benutzername:</label>
+                <p class="entry-content" th:text="${person.username}"></p>
+            </div>
+            <div class="info-group">
+                <label>Passwort:</label>
+                <p class="entry-content" th:password="${person.password}"></p>
+            </div>
+            <form method="get" action="/profile/edit">
+                <button type="submit" class="btn">Bearbeiten</button>
+            </form>
+        </div>
+
+        <!-- Bearbeitungsformular -->
+        <form method="post" action="/profile/update" th:if="${editMode}">
+                <div class="login-group">
+                    <label for="vorname">Vorname:</label>
+                    <input class="edit-input" type="text" id="vorname" name="vorname" th:value="${person.vorname}">
+                </div>
+                <div class="login-group">
+                    <label for="nachname">Nachname:</label>
+                    <input class="edit-input" type="text" id="nachname" name="nachname" th:value="${person.nachname}">
+                </div>
+                <div class="login-group">
+                    <label for="email">E-Mail:</label>
+                    <input class="edit-input" type="text" id="email" name="email" th:value="${person.email}">
+                </div>
+                <div class="login-group">
+                    <label for="username">Benutzername:</label>
+                    <input class="edit-input" type="text" id="username" name="username" th:value="${person.username}">
+                </div>
+                <div class="login-group">
+                    <label for="password">Passwort:</label>
+                    <input class="edit-input" type="password" id="password" th:value="${person.password}">
+                </div>
+            <button type="submit" class="btn">Speichern</button>
+            <a href="/profile" class="btn cancel-btn">Abbrechen</a>
+        </form>
+        <form method="post" action="/courses/enroll">
+            <label for="course">Kurse auswählen:</label>
+            <select id="course" name="courseId">
+                <option value="">--- Kurs auswählen ---</option>
+                <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.name}"></option>
+            </select>
+            <button type="submit">Einschreiben</button>
+        </form>
+
+        <p th:if="${courses == null or courses.size() == 0}">Keine Kurse verfügbar.</p>
+    </div>
+</main>
+<footer>
+    <div class="container footer-content">
+        <p>&copy; 2025 Learning Journal</p>
+        <p>Mischok Academy</p>
+    </div>
+</footer>
+</body>
+</html>
