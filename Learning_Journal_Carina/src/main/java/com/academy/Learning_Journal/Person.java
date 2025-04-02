@@ -3,6 +3,7 @@ package com.academy.Learning_Journal;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,9 +29,18 @@ public class Person {
 
     private String  password;
 
+    private String role;
+
     @OneToMany(mappedBy = "author")
-    private Set<Entry> entries;
+    private List<Entry> entries;
 
     @OneToMany(mappedBy = "person")
     private Set<Session> sessions;
+
+    @ManyToMany
+    @JoinTable(name = "courses_enrolled",
+    joinColumns = @JoinColumn(name = "person_id"),
+    inverseJoinColumns = @JoinColumn(name = "course_id"))
+    Set<Course> courses;
+
 }

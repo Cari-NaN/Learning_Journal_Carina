@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning Journal</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<header>
+    <div class="container nav-container">
+        <div class="logo">Learning Journal</div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/entries}">Learning Journal</a></li>
+                <li><a href="#">Lightning Topics</a></li>
+                <li><a th:href="@{/profile}">Profil</a></li>
+                <form method="post" action="/logout">
+                    <li><button class = "logout-btn" onclick="window.location.href='/logout'">Logout</button></li>
+                </form>
+            </ul>
+        </nav>
+    </div>
+</header>
+<main class="container">
+    <h1 class="page-title">Kurse</h1>
+    <h2>Neuen Kurs erstellen</h2>
+    <form action="/courses/create" method="post">
+        <label for="name">Kursname:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Kurs erstellen</button>
+    </form>
+    <br>
+<!--    <a href="/courses/list">Alle Kurse anzeigen</a>-->
+    <h2>Alle Kurse</h2>
+    <ul>
+        <li th:each="course : ${courses}" th:text="${course.name}"></li>
+    </ul>
+    <br>
+</main>
+</body>
+</html>

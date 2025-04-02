@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
 <header>
@@ -12,8 +12,8 @@
         <div class="logo">Learning Journal</div>
         <nav>
             <ul>
-                <li><a href="#">Learning Journal</a></li>
-                <li><a href="#">Lightning Topics</a></li>
+                <li><a th:href="@{/entries}">Learning Journal</a></li>
+                <li><a th:href="@{lightningTopics}">Lightning Topics</a></li>
                 <li><a th:href="@{/profile}">Profil</a></li>
                 <li><a href="#" class="active">Login</a></li>
             </ul>
@@ -22,24 +22,26 @@
 </header>
 <main class="container">
     <h1 class="page-title">Login</h1>
-    <div class = "login-container">
-    <section class="login-form">
-        <h2 class="form-title">Bitte loggen Sie sich ein:</h2>
-        <form method="post" action="/login">
-            <div class="login-group">
-                <label for="username">Benutzername:</label>
-                <input type="text" id="username" name="username" class="login-control">
-            </div>
-            <div class="login-group">
-                <label for="password">Passwort:</label>
-                <input type="password" name="password" id="password" class="login-control"></input>
-            </div>
-            <button type="submit" class="btn">Login</button>
-        </form>
-        <p class="register-link">
-            Noch keinen Account? <a href="/addPerson">Jetzt registrieren</a>
-        </p>
-    </section>
+    <div class="login-container">
+        <section class="login-form">
+            <h2 class="form-title">Bitte loggen Sie sich ein:</h2>
+            <form method="post" action="/login">
+                <div class="login-group">
+                    <label for="username">Benutzername:</label>
+                    <input type="text" id="username" name="username" class="login-control">
+                </div>
+                <div class="login-group">
+                    <label for="password">Passwort:</label>
+                    <input type="password" name="password" id="password" class="login-control"></input>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="error" th:if="${error}" th:text="${error}"></div>
+            </form>
+            <p class="register-link">
+                Noch keinen Account? <a href="/addPerson">Jetzt registrieren</a>
+            </p>
+
+        </section>
     </div>
 </main>
 </body>

@@ -2,6 +2,8 @@ package com.academy.Learning_Journal;
 
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -24,6 +27,9 @@ public class PersonController {
 
     @Autowired
     private SessionRepository sessionRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @GetMapping("/addPerson")
     public String showRegistrationForm() {
@@ -44,30 +50,39 @@ public class PersonController {
                 .email(formEmail)
                 .username(formUsername)
                 .password(formPassword)
+                .role("USER")
                 .build();
         personRepository.save(p);
+
         return "redirect:/login";
     }
 
-    private Optional<Person> getLoggedInPerson(String sessionId) {
-        if (sessionId.isEmpty()) {
+    @Transactional
+    public Optional<Person> getLoggedInPerson(String sessionId) {
+        if (sessionId.isEmpty() || sessionId == null) {
             return Optional.empty();
         } else {
             return sessionRepository.findById(UUID.fromString(sessionId)).map(Session::getPerson);      //alternative schreibweise: .map(session -> session.getPerson());
-                                                                                                        //map() gibt Optional.empty() zurück, anstatt Exception zu werfen, deswegen kein get()
         }
     }
 
+    @Transactional
     @GetMapping("/profile")
     public String showProfile(
             @CookieValue(value="session_id", defaultValue = "")     String cookieSessionId,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
         Optional<Person> p = getLoggedInPerson(cookieSessionId);
         if (p.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error","Du bist nicht eingeloggt.");
+
             return "redirect:/login";
         }
+//        Hibernate.initialize(courseRepository.findAll());
         model.addAttribute("person", p.get());
+        model.addAttribute("courses", courseRepository.findAll());
+//        model.addAttribute("allCourses", courseRepository.findAll());
         return "profile";
     }
 

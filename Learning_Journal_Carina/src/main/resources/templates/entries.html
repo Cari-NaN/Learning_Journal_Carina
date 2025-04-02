@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Learning Journal</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-<header>
+<header class="navbar">
     <div class="container nav-container">
         <div class="logo">Learning Journal</div>
         <nav>
@@ -15,7 +15,9 @@
                 <li><a th:href="@{/entries}" class="active">Learning Journal</a></li>
                 <li><a href="#">Lightning Topics</a></li>
                 <li><a th:href="@{/profile}">Profil</a></li>
-                <li><button class = "logout-btn" onclick="window.location.href='/login'">Logout</button></li>
+                <form method="post" action="/logout">
+                <li><button class = "logout-btn" onclick="window.location.href='/logout'">Logout</button></li>
+                </form>
             </ul>
         </nav>
     </div>
@@ -25,7 +27,7 @@
 
     <section class="entry-form">
         <h2 class="form-title">Neuen Eintrag erstellen</h2>
-        <form method="post" action="/saveEntry">
+        <form method="post" action="/entries/save">
             <div class="form-group">
                 <label for="title">Überschrift</label>
                 <input type="text" id="title" name="title" class="form-control"
@@ -40,8 +42,8 @@
         </form>
     </section>
 
-    <section class="journal-entries">
-
+    <section>
+        <div class="journal-entries" th:if="${editMode == null}">
         <article class="journal-entry" th:each="entry : ${entries}">
             <header class="entry-header">
                 <h2 class="entry-title" th:text="${entry.title}">Journal Eintrag</h2>
@@ -49,18 +51,33 @@
             </header>
             <div class="entry-content">
                 <p th:text="${entry.content}">Hier der Eintrag.</p>
-
             </div>
-            <form class="entry-form-btns" method="get" action="/updateEntry">
+            <div class="entry-form-btns">
+            <form method="get" action="/entries/edit">
                 <input type="hidden" name="id" th:value="${entry.id}">
                 <button class = "btn">Bearbeiten</button>
             </form>
-            <form class="entry-form-btns" method="post" action="/deleteEntry" onsubmit="return confirm('Willst du den Eintrag wirklich löschen?');">
+            <form method="post" action="/entries/delete" onsubmit="return confirm('Willst du den Eintrag wirklich löschen?');">
                 <input type="hidden" name="id" th:value="${entry.id}">
                 <button class = "btn">Löschen</button>
             </form>
-
+            </div>
         </article>
+        </div>
+        <form class="journal-entries" method="post" action="/entries/update" th:if="${editMode}">
+            <h2 class="form-title">Bitte bearbeite hier deinen Eintrag:</h2>
+            <div class="login-group">
+                <label for="editTitle">Überschrift:</label>
+                <input class="form-control" type="text" id="editTitle" name="title" th:value="${entry.title}"></input>
+            </div>
+            <div class="login-group">
+                <label for="entryContent">Eintrag:</label>
+                <input class="form-control" type="text" id="entryContent" name="content" th:value="${entry.content}">
+            </div>
+            <input type="hidden" name="id" th:value="${entry.id}">
+            <button type="submit" class="btn">Speichern</button>
+            <a href="/entries" class="btn">Abbrechen</a>
+        </form>
 
     </section>
 </main>

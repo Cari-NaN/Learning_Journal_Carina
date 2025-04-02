@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -27,19 +30,26 @@ public class SessionController {
     public String login(
             @RequestParam(name = "username", required = true)   String loginUsername,
             @RequestParam(name = "password", required = true)   String loginPassword,
-            HttpServletResponse response
+            HttpServletResponse response,
+            RedirectAttributes redirectAttributes
     ) {
-        Person p = personRepository.findByUsername(loginUsername);
+        Optional<Person> p = personRepository.findByUsername(loginUsername);
 
-        if (loginPassword.equals(p.getPassword())) {
+        if (p.isPresent() && loginPassword.equals(p.get().getPassword())) {
             Session session = new Session();
-            session.setPerson(p);
+            session.setPerson(p.get());
             session = sessionRepository.save(session);
             response.addCookie(new Cookie("session_id", session.getId().toString()));
         } else {
-            System.out.println("Ungültiger Nutzer");
-            System.out.println(1/0);
-            return "login";
+            // Dem User wird mitgeteilt, wo der Fehler liegt
+            if (p.isEmpty() && loginPassword.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error","Du bist nicht eingeloggt.");
+            } else if (!p.isPresent()) {
+                redirectAttributes.addFlashAttribute("error","Falscher Benutzername.");
+            } else if (!loginPassword.equals(p.get().getPassword())){
+                redirectAttributes.addFlashAttribute("error","Falsches Passwort.");
+            }
+            return "redirect:/login";
         }
         return "redirect:/entries";
     }
@@ -55,6 +65,6 @@ public class SessionController {
         c.setMaxAge(0);
         response.addCookie(c);
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 }
